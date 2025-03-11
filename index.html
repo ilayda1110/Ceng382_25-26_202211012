@@ -58,8 +58,6 @@
 			</div>			
 		</div>
 
-		<script src="script.js"></script>
-
 		<audio id="wingSoundEffect">
 			<source src="wingOpening.MP3">
 		</audio>
@@ -67,6 +65,10 @@
 		<audio id="song">
 			<source src="0303.MP3">
 		</audio>
+
+		<div class="clock-container">
+			<div class="clock" id="clock"></div>
+		</div>
 
 		<div class="wrapper">
 			<div class="title">
@@ -93,17 +95,19 @@
 			<form action="#">
 				<div class="row">
 					<i class="fas fa-user"></i>
-					<input type="text" placeholder="Scout Username" required />
+					<input id="username" type="text" placeholder="Scout Username" required />
 				</div>
 				<div class="row">
 					<i class="fas fa-lock"></i>
-					<input type="password" placeholder="Password" required />
+					<input id="password" type="password" placeholder="Password" required />
 				</div>
 				<div class="pass"><a href="#">Forgot Password?</a></div>
-				<div class="row button" id="loginForm">
+				<div class="row button" id="submit">
 					<input type="submit" value="Login" />
 				</div>
 			</form>
 		</div>
+
+		<script src="script.js"></script>
 	</body>
 </html>
