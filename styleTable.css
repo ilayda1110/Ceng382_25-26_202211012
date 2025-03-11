@@ -1,0 +1,112 @@
+@font-face {
+    font-family: "AttackOnTitanFont";
+    src: url('Angel wish.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'AttackOnTitanFont', sans-serif;
+}
+
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+    padding: 15px;
+    background-image: url(wallpaper.jpg);
+    overflow: hidden;
+}
+
+.title
+{
+    height: 100px;
+    background: #88755d;
+    border-radius: 5px 5px 0 0;
+    color: #fff;
+    font-size: 50px;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.className
+{
+    height: 20px;
+    margin-top: 15px;
+    position: relative;
+    font-size: 30px;
+}
+
+.numPeople
+{
+    height: 20px;
+    margin-top: 30px;
+    position: relative;
+    font-size: 30px;
+}
+
+.description
+{
+    height: 20px;
+    margin-top: 45px;
+    position: relative;
+    font-size: 30px;
+}
+
+
+button#submitBtn {
+    
+    margin-top: 45px;
+    font-size: 20px;  /* Bigger text */
+    font-weight: bold; /* Make text bold */
+    color: black; /* White text */
+    background: #88755d; /* Brown background */
+    padding: 12px 24px; /* Bigger padding for a better button size */
+    border: none; /* Remove default border */
+    border-radius: 8px; /* Slightly rounded corners */
+    cursor: pointer; /* Show pointer cursor */
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover effect */
+button#submitBtn:hover {
+    background: #705c46; /* Darker brown on hover */
+    transform: scale(1.05); /* Slight size increase */
+}
+
+/* Click effect */
+button#submitBtn:active {
+    background: #5a4835; /* Even darker brown when clicked */
+    transform: scale(0.98); /* Slight shrink */
+}
+
+.table
+{
+    position: fixed;
+    margin-top: -400px;
+    max-width: 500px;
+    width: 100%;
+    background: rgba(136, 117, 93, 0.7);
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px 1px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Add a hover event which works like this: When the mouse hovers over a table row, its background color temporarily changes */
+
+tr {
+    transition: background-color 0.3s ease;
+}
+
+tr:hover {
+    background-color: rgba(255, 255, 255, 0.3); /* Light white transparent effect */
+    cursor: pointer;
+}

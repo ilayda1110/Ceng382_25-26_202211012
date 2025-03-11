@@ -54,7 +54,15 @@ document.getElementById("submit").addEventListener("click", function(event) {
     }
 
     event.preventDefault();
+
+    if(username === "admin" && password === "admin")
+    {
+        /* When user presses login button, it needs to open a new page. How do i do that? */
+        window.location.href = "table.html";
+    } 
 });
+
+
 
 /* How to add a live clock that updates real time? */
 function updateClock() {
