@@ -1,3 +1,18 @@
+<!--  
+
+My table.html is like this:
+This page should include:  
+o A class information input form with the following fields:  
+▪ Class Name 
+▪ Number of People 
+▪ Description 
+o A class table that displays the entered class information, showing the above details 
+for each entry. 
+
+Implement functionality so that when data is entered and submitted via the form, the class  
+table updates dynamically without reloading the page
+
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,100 +22,50 @@
     <link rel="stylesheet" href="styleTable.css">
 </head>
 <body>
-    <div class="table">
-        <div class="title">
+    <div class="infoForm">
+        <div class="formTitle">
             <span>Class Information Form</span>
         </div>
         <form id="classForm">
-        <div class="className">
-            <span>Class Name:</span>
-            <input type="text" id="className" required>
+            <div class="classNameText">
+                <span>Class Name:</span>
+                <input type="text" id="className" required>
+            </div>
+            <div class="numOfPeopleText">
+                <span>Number Of People:</span>
+                <input type="number" id="numPeople" required>
+            </div>
+            <div class="descriptionText">
+                <span>Description:</span>
+                <input type="description" id="description" required></textarea>
+            </div>
+            <button type="submit" id="submitBtn">Add Class</button>
+        </form>
+    </div>
+    
+    <div class="classTableWrapper">
+        <div class="classTable">
+            <div class="classTableTitle">
+                <span>Class Table</span>
+            </div>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th class="className">Class Name</th>
+                        <th class="numofpeople">Number of People</th>
+                        <th class="description">Description</th>
+                        <th class="actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="classTableBody" class="tableBody">
+                    <!-- Table rows will be dynamically added here -->
+                </tbody>
+            </table>
         </div>
-        <div class="numPeople">
-            <span>Number Of People:</span>
-            <input type="number" id="numPeople" required>
-        </div>
-        <div class="description">
-            <span>Description:</span>
-            <textarea id="description" required></textarea>
-        </div>
-        <button type="submit" id="submitBtn">Add Class</button>
-    </form>
-
-    <h2>Class Table</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Class Name</th>
-                <th>Number of People</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="classTableBody">
-            <!-- Table rows will be dynamically added here -->
-        </tbody>
-    </table>
-
     </div>
     
 
-    <script>
-        document.getElementById("classForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Prevent form from reloading the page
-    
-        // Get form values
-        const className = document.getElementById("className").value.trim();
-        const numPeople = document.getElementById("numPeople").value.trim();
-        const description = document.getElementById("description").value.trim();
-    
-        if (!className || !numPeople || !description) {
-            alert("Please fill in all fields!");
-            return;
-        }
-    
-        // Create a new row
-        const tableBody = document.getElementById("classTableBody");
-        const newRow = document.createElement("tr");
-    
-        newRow.innerHTML = `
-            <td>${className}</td>
-            <td>${numPeople}</td>
-            <td>${description}</td>
-            <td><button class="delete-btn">Delete</button></td>
-        `;
-        
-        // Append the row to the table
-        tableBody.appendChild(newRow);
-        
-        /*  Also add this:
-            When a row is double-clicked, additional actions like displaying detailed 
-            information or removing the row are triggered
-        */
-            // Add event listener to delete button
-            newRow.querySelector(".delete-btn").addEventListener("click", function() {
-                newRow.remove(); // Remove the row when delete button is clicked
-            });
-    
-            // ✅ Add double-click event to show detailed info
-            newRow.addEventListener("dblclick", function() {
-                alert(`Class: ${className}\nNumber of People: ${numPeople}\nDescription: ${description}`);
-            });
-    
-
-            // ✅ Add hover effect
-            newRow.addEventListener("mouseenter", function() {
-                newRow.style.backgroundColor = "lightgray";
-            });
-    
-            newRow.addEventListener("mouseleave", function() {
-                newRow.style.backgroundColor = "";
-            });
-    
-            // Clear the form fields
-            document.getElementById("classForm").reset();
-        });
-    </script>
+    <script src="tablescript.js"></script>
     
 </body>
 </html>
