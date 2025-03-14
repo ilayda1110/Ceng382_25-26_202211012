@@ -27,6 +27,16 @@ document.getElementById("classForm").addEventListener("submit", function(event)
     // Append the row to the table
     tableBody.appendChild(newRow);
     
+
+/*
+    Customize my delete button like my "Add class" button
+*/
+    // ✅ Style Delete Button
+    const deleteButton = newRow.querySelector(".delete-btn");
+    deleteButton.classList.add("styled-button"); // Apply the shared button style    
+
+
+
 /*  
     Also add this:
     When a row is double-clicked, additional actions like displaying detailed 
