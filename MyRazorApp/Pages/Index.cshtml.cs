@@ -5,66 +5,79 @@ namespace MyRazorApp.Pages;
 
 public class IndexModel : PageModel
 {
-    [BindProperty]
-    public ClassInformationModel NewClass { get; set; } = new ClassInformationModel();
+        private static List<ClassInformationModel> classInformations = new List<ClassInformationModel>();
+        private static int nextId = 1;
 
-    public List<ClassInformationModel> Classes { get; private set; } = new List<ClassInformationModel>();
+        [BindProperty]
+        public ClassInformationModel ClassInformation { get; set; }
 
-    [BindProperty]
-    public int? EditId { get; set; } // Track which class is being edited
+        public List<ClassInformationModel> ClassInformations => classInformations;
 
-    public void OnGet()
-    {
-        Classes = ClassInformationDatabase.GetAllClasses();
-    }
-
-    public IActionResult OnPost()
-{
-    if (!ModelState.IsValid)
-    {
-        Classes = ClassInformationDatabase.GetAllClasses();
-        return Page();
-    }
-
-    if (EditId.HasValue)
-    {
-        NewClass.Id = EditId.Value;
-        ClassInformationDatabase.UpdateClass(NewClass);
-        EditId = null;
-        return RedirectToPage(); // Redirect to reload the page
-    }
-    else
-    {
-        ClassInformationDatabase.AddClass(NewClass);
-        return RedirectToPage(); // Redirect to reload the page
-    }
-}
-
-    public IActionResult OnPostEdit(int id)
-    {
-        var classToEdit = ClassInformationDatabase.GetClassById(id);
-        if (classToEdit == null)
+        public void OnGet(int? id)
         {
-            return RedirectToPage();
+            if (id.HasValue)
+            {
+                var item = classInformations.Find(x => x.Id == id.Value);
+                if (item != null)
+                {
+                    ClassInformation = new ClassInformationModel
+                    {
+                        Id = item.Id,
+                        ClassName = item.ClassName,
+                        StudentCount = item.StudentCount,
+                        Description = item.Description
+                    };
+                }
+                else
+                {
+                    ClassInformation = new ClassInformationModel();
+                }
+            }
+            else
+            {
+                ClassInformation = new ClassInformationModel();
+            }
         }
 
-        // Populate the form with class data for editing
-        NewClass = new ClassInformationModel
+        public IActionResult OnPost()
         {
-            Id = classToEdit.Id,
-            ClassName = classToEdit.ClassName,
-            StudentCount = classToEdit.StudentCount,
-            Description = classToEdit.Description
-        };
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
-        EditId = id; // Set EditId to indicate we are editing this class
-        Classes = ClassInformationDatabase.GetAllClasses();
-        return Page(); // Return to the same page to show the populated form
-    }
+            if (ClassInformation.Id == 0)
+            {
+                ClassInformation.Id = nextId++;
+                classInformations.Add(ClassInformation);
+            }
+            else
+            {
+                var existingItem = classInformations.Find(x => x.Id == ClassInformation.Id);
+                if (existingItem != null)
+                {
+                    existingItem.ClassName = ClassInformation.ClassName;
+                    existingItem.StudentCount = ClassInformation.StudentCount;
+                    existingItem.Description = ClassInformation.Description;
+                }
+            }
 
-    public IActionResult OnPostDelete(int id)
-    {
-        ClassInformationDatabase.DeleteClass(id);
-        return RedirectToPage(); // Refresh page after deletion
-    }
+            return RedirectToPage("./Index");
+        }
+
+        public IActionResult OnPostEdit(int id)
+        {
+            return RedirectToPage("./Index", new { id = id });
+        }
+
+        public IActionResult OnPostDelete(int id)
+        {
+            var itemToRemove = classInformations.Find(x => x.Id == id);
+            if (itemToRemove != null)
+            {
+                classInformations.Remove(itemToRemove);
+            }
+
+            return RedirectToPage("./Index");
+        }
 }

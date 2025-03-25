@@ -1,48 +1,80 @@
 ﻿@page
-@model MyRazorApp.Pages.IndexModel
+@model IndexModel
 @{
     ViewData["Title"] = "Class Information";
 }
 
-<div class="container mt-4">
+<style>
+    /* Now, customize the site. Add colors for the body, header and symbols (trashcan for delete & pencil for edit) */
+    body {
+        background-color: #f8f9fa; /* Light gray background */
+    }
+
+    h2 {
+        color: #007bff; /* Blue header text */
+    }
+
+    .btn-warning {
+        background-color: #ffc107; /* Yellow edit button */
+        border-color: #ffc107;
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Red delete button */
+        border-color: #dc3545;
+    }
+
+    .btn-warning:hover, .btn-danger:hover{
+        opacity: 0.8;
+    }
+
+    .edit-icon:before {
+        content: "\270F"; /* Pencil symbol */
+        margin-right: 5px;
+    }
+
+    .delete-icon:before {
+        content: "\1F5D1"; /* Trashcan symbol */
+        margin-right: 5px;
+    }
+
+</style>
+
+<div class="container">
     <div class="row">
-        <!-- Form Column -->
-        <div class="col-md-4">
-            <h4>@(Model.EditId.HasValue ? "Edit Class" : "Add New Class")</h4>
+        <div class="col-md-6">
+            <h2>Add/Edit Class</h2>
             <form method="post">
-                <input type="hidden" asp-for="EditId" />
+                <input type="hidden" asp-for="ClassInformation.Id" />
 
                 <div class="mb-3">
-                    <label class="form-label">Class Name</label>
-                    <input asp-for="NewClass.ClassName" class="form-control" />
-                    <span asp-validation-for="NewClass.ClassName" class="text-danger"></span>
+                    <label asp-for="ClassInformation.ClassName" class="form-label">Class Name</label>
+                    <input asp-for="ClassInformation.ClassName" class="form-control" />
+                    <span asp-validation-for="ClassInformation.ClassName" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Student Count</label>
-                    <input asp-for="NewClass.StudentCount" type="number" class="form-control" />
-                    <span asp-validation-for="NewClass.StudentCount" class="text-danger"></span>
+                    <label asp-for="ClassInformation.StudentCount" class="form-label">Student Count</label>
+                    <input asp-for="ClassInformation.StudentCount" class="form-control" />
+                    <span asp-validation-for="ClassInformation.StudentCount" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Description</label>
-                    <textarea asp-for="NewClass.Description" class="form-control"></textarea>
-                    <span asp-validation-for="NewClass.Description" class="text-danger"></span>
+                    <label asp-for="ClassInformation.Description" class="form-label">Description</label>
+                    <textarea asp-for="ClassInformation.Description" class="form-control"></textarea>
+                    <span asp-validation-for="ClassInformation.Description" class="text-danger"></span>
                 </div>
 
-                <button type="submit" class="btn btn-primary">
-                    @(Model.EditId.HasValue ? "Update Class" : "Add Class")
-                </button>
+                <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
 
-        <!-- Table Column -->
-        <div class="col-md-8">
-            <h4>Class List</h4>
-            <table class="table table-bordered">
+        <div class="col-md-6">
+            <h2>Class List</h2>
+            <table class="table">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Id</th>
                         <th>Class Name</th>
                         <th>Student Count</th>
                         <th>Description</th>
@@ -50,20 +82,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var classItem in Model.Classes)
+                    @foreach (var item in Model.ClassInformations)
                     {
                         <tr>
-                            <td>@classItem.Id</td>
-                            <td>@classItem.ClassName</td>
-                            <td>@classItem.StudentCount</td>
-                            <td>@classItem.Description</td>
+                            <td>@item.Id</td>
+                            <td>@item.ClassName</td>
+                            <td>@item.StudentCount</td>
+                            <td>@item.Description</td>
                             <td>
-                                <form method="post">
-                                    <input type="hidden" name="id" value="@classItem.Id" />
-                                    <button type="submit" asp-page-handler="Edit"
-                                        class="btn btn-warning btn-sm">Edit</button>
-                                    <button type="submit" asp-page-handler="Delete" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Are you sure?');">Delete</button>
+                                <form method="post" asp-page-handler="Edit" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit" class="btn btn-sm btn-warning"> <span class="edit-icon"></span>Edit</button>
+                                </form>
+                                <form method="post" asp-page-handler="Delete" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit" class="btn btn-sm btn-danger"> <span class="delete-icon"></span>Delete</button>
                                 </form>
                             </td>
                         </tr>
@@ -73,11 +106,3 @@
         </div>
     </div>
 </div>
-
-<!-- Validation Scripts -->
-@section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
-}
