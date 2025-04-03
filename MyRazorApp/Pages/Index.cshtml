@@ -5,39 +5,37 @@
 }
 
 <style>
-    /* Now, customize the site. Add colors for the body, header and symbols (trashcan for delete & pencil for edit) */
     body {
-        background-color: #f8f9fa; /* Light gray background */
+        background-color: #f8f9fa;
     }
 
     h2 {
-        color: #007bff; /* Blue header text */
+        color: #007bff;
     }
 
     .btn-warning {
-        background-color: #ffc107; /* Yellow edit button */
+        background-color: #ffc107;
         border-color: #ffc107;
     }
 
     .btn-danger {
-        background-color: #dc3545; /* Red delete button */
+        background-color: #dc3545;
         border-color: #dc3545;
     }
 
-    .btn-warning:hover, .btn-danger:hover{
+    .btn-warning:hover, .btn-danger:hover {
         opacity: 0.8;
     }
 
     .edit-icon:before {
-        content: "\270F"; /* Pencil symbol */
+        content: "\270F";
         margin-right: 5px;
     }
 
     .delete-icon:before {
-        content: "\1F5D1"; /* Trashcan symbol */
+        content: "\1F5D1";
         margin-right: 5px;
     }
-
 </style>
 
 <div class="container">
@@ -71,10 +69,16 @@
 
         <div class="col-md-6">
             <h2>Class List</h2>
+
+            <!-- Search Bar -->
+            <form method="get" class="mb-3">
+                <input type="text" name="SearchTerm" value="@Model.SearchTerm" placeholder="Search by Class Name" class="form-control" />
+                <button type="submit" class="btn btn-secondary mt-2">Filter</button>
+            </form>
+
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Id</th>
                         <th>Class Name</th>
                         <th>Student Count</th>
                         <th>Description</th>
@@ -82,10 +86,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.ClassInformations)
+                    @foreach (var item in Model.FilteredClasses)
                     {
                         <tr>
-                            <td>@item.Id</td>
                             <td>@item.ClassName</td>
                             <td>@item.StudentCount</td>
                             <td>@item.Description</td>
@@ -103,6 +106,21 @@
                     }
                 </tbody>
             </table>
+
+            <!-- Pagination -->
+            @if (Model.TotalPages > 1)
+            {
+                <nav>
+                    <ul class="pagination">
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                                <a class="page-link" asp-page="./Index" asp-route-PageNumber="@i" asp-route-SearchTerm="@Model.SearchTerm">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
         </div>
     </div>
 </div>
