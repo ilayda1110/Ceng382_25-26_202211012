@@ -1,8 +1,3 @@
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace MyRazorApp.Pages;
-
 /* First prompt i used for week6 tasks:
 
 I created a Razor Pages project. I have a ClassList table which displays Id, ClassName, StudentCount, Description and Actions(Edit or Delete) and Add/Edit Class table to get input from user and a submit button.
@@ -21,6 +16,10 @@ query parameters.
 (source code provided Index.cshtml, Index.cshtml.cs, ClassInformationModel.cs)
 
 */
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace MyRazorApp.Pages;
 
 public class ClassInformationTable
 {

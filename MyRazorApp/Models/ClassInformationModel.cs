@@ -1,8 +1,3 @@
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace MyRazorApp.Pages;
-
 /*
 
 Create a Razor Page.
@@ -68,6 +63,11 @@ right).
 • After deletion or editing, refresh the page and update the table accordingly.
 
 */
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace MyRazorApp.Pages;
+
 public class ClassInformationModel
 {
         public int Id { get; set; }
