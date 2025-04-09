@@ -162,7 +162,20 @@ public class IndexModel : PageModel
     }
 
     var json = Utils.Instance.ExportToJson(dataToExport, selectedColumns?.Any() == true ? selectedColumns : null);
-    return new JsonResult(new { json });
+    
+    // Save to Log folder
+    var logFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Log");
+    if (!Directory.Exists(logFolderPath))
+    {
+        Directory.CreateDirectory(logFolderPath);
+    }
+    
+    var fileName = $"{(filteredOnly ? "filtered_classes" : "all_classes")}_{DateTime.Now:yyyyMMddHHmmss}.json";
+    var filePath = Path.Combine(logFolderPath, fileName);
+    System.IO.File.WriteAllText(filePath, json);
+    
+    // Still return the JSON for download
+    return new JsonResult(new { json, fileName });
 }
 
 }

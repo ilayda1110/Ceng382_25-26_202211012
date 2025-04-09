@@ -203,21 +203,25 @@
             filteredOnly: filteredOnly,
             selectedColumns: selectedColumns,
             searchTerm: $('input[name="SearchTerm"]').val(),
-            pageNumber: @Model.PageNumber // Razor injects current page number
+            pageNumber: @Model.PageNumber
         },
         headers: {
             RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
         },
         success: function(data) {
+            // Create download
             var blob = new Blob([data.json], { type: 'application/json' });
             var url = URL.createObjectURL(blob);
             var a = document.createElement('a');
             a.href = url;
-            a.download = (filteredOnly ? 'filtered_classes' : 'all_classes') + '_' + new Date().toISOString().slice(0, 10) + '.json';
+            a.download = data.fileName;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            
+            // Show success message
+            alert('File has been saved to the Log folder and downloaded.');
         },
         error: function(xhr, status, error) {
             console.error('Export failed:', error);
