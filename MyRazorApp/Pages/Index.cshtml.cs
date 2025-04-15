@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using MyRazorApp.Helpers;
 using System.Text.Json;
-using System.Linq; // Add this for FirstOrDefault
+using System.Linq;
+using Microsoft.AspNetCore.Authorization; // Add this for FirstOrDefault
 
 namespace MyRazorApp.Pages;
 
+[Authorize]
 public class IndexModel : PageModel
 {
     private static List<ClassInformationModel> classInformations = new List<ClassInformationModel>();
@@ -26,8 +28,14 @@ public class IndexModel : PageModel
     public int PageSize { get; set; } = 10;
     public int TotalPages { get; set; }
 
-    public void OnGet(int? id) // Make the id parameter nullable
+    public IActionResult OnGet(int? id)
     {
+        // Check authentication - this should return RedirectToPage if not authenticated
+        if (!IsAuthenticated())
+        {
+            return RedirectToPage("/Login");
+        }
+
         // Ensure synthetic data is present for pagination testing
         if (!classInformations.Any())
         {
@@ -47,11 +55,11 @@ public class IndexModel : PageModel
         // Filtering
         var filteredList = string.IsNullOrEmpty(SearchTerm)
             ? classInformations
-            : classInformations.Where(c => c.ClassName.Contains(SearchTerm, System.StringComparison.OrdinalIgnoreCase)).ToList();
+            : classInformations.Where(c => c.ClassName.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
 
         // Pagination
-        TotalPages = (int)System.Math.Ceiling((double)filteredList.Count / PageSize);
-        PageNumber = System.Math.Max(1, System.Math.Min(PageNumber, TotalPages > 0 ? TotalPages : 1)); // Ensure valid page number
+        TotalPages = (int)Math.Ceiling((double)filteredList.Count / PageSize);
+        PageNumber = Math.Max(1, Math.Min(PageNumber, TotalPages > 0 ? TotalPages : 1));
 
         FilteredClasses = filteredList
             .Skip((PageNumber - 1) * PageSize)
@@ -64,8 +72,25 @@ public class IndexModel : PageModel
                 Description = c.Description
             })
             .ToList();
+
+        return Page(); // Make sure this is present!
     }
 
+    private bool IsAuthenticated()
+    {
+        var sessionUsername = HttpContext.Session.GetString("username");
+        var sessionToken = HttpContext.Session.GetString("token");
+        var sessionId = HttpContext.Session.GetString("session_id");
+
+        Request.Cookies.TryGetValue("username", out var cookieUsername);
+        Request.Cookies.TryGetValue("token", out var cookieToken);
+        Request.Cookies.TryGetValue("session_id", out var cookieSessionId);
+
+        return !string.IsNullOrEmpty(sessionUsername) &&
+               sessionUsername == cookieUsername &&
+               sessionToken == cookieToken &&
+               sessionId == cookieSessionId;
+    }
     public IActionResult OnPost()
     {
         if (!ModelState.IsValid)
@@ -123,59 +148,59 @@ public class IndexModel : PageModel
     }
 
     public IActionResult OnPostExport(bool filteredOnly, string[] selectedColumns, string? searchTerm, int pageNumber)
-{
-    IEnumerable<ClassInformationTable> dataToExport;
-
-    if (filteredOnly)
     {
-        // Filter
-        var filteredList = string.IsNullOrEmpty(searchTerm)
-            ? classInformations
-            : classInformations.Where(c => c.ClassName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+        IEnumerable<ClassInformationTable> dataToExport;
 
-        // Pagination
-        int totalPages = (int)Math.Ceiling((double)filteredList.Count / PageSize);
-        int validPage = Math.Max(1, Math.Min(pageNumber, totalPages > 0 ? totalPages : 1));
+        if (filteredOnly)
+        {
+            // Filter
+            var filteredList = string.IsNullOrEmpty(searchTerm)
+                ? classInformations
+                : classInformations.Where(c => c.ClassName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
 
-        var pagedList = filteredList
-            .Skip((validPage - 1) * PageSize)
-            .Take(PageSize)
-            .Select(c => new ClassInformationTable
+            // Pagination
+            int totalPages = (int)Math.Ceiling((double)filteredList.Count / PageSize);
+            int validPage = Math.Max(1, Math.Min(pageNumber, totalPages > 0 ? totalPages : 1));
+
+            var pagedList = filteredList
+                .Skip((validPage - 1) * PageSize)
+                .Take(PageSize)
+                .Select(c => new ClassInformationTable
+                {
+                    Id = c.Id,
+                    ClassName = c.ClassName,
+                    StudentCount = c.StudentCount,
+                    Description = c.Description
+                });
+
+            dataToExport = pagedList;
+        }
+        else
+        {
+            dataToExport = classInformations.Select(c => new ClassInformationTable
             {
                 Id = c.Id,
                 ClassName = c.ClassName,
                 StudentCount = c.StudentCount,
                 Description = c.Description
             });
+        }
 
-        dataToExport = pagedList;
-    }
-    else
-    {
-        dataToExport = classInformations.Select(c => new ClassInformationTable
+        var json = Utils.Instance.ExportToJson(dataToExport, selectedColumns?.Any() == true ? selectedColumns : null);
+
+        // Save to Log folder
+        var logFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Log");
+        if (!Directory.Exists(logFolderPath))
         {
-            Id = c.Id,
-            ClassName = c.ClassName,
-            StudentCount = c.StudentCount,
-            Description = c.Description
-        });
-    }
+            Directory.CreateDirectory(logFolderPath);
+        }
 
-    var json = Utils.Instance.ExportToJson(dataToExport, selectedColumns?.Any() == true ? selectedColumns : null);
-    
-    // Save to Log folder
-    var logFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Log");
-    if (!Directory.Exists(logFolderPath))
-    {
-        Directory.CreateDirectory(logFolderPath);
+        var fileName = $"{(filteredOnly ? "filtered_classes" : "all_classes")}_{DateTime.Now:yyyyMMddHHmmss}.json";
+        var filePath = Path.Combine(logFolderPath, fileName);
+        System.IO.File.WriteAllText(filePath, json);
+
+        // Still return the JSON for download
+        return new JsonResult(new { json, fileName });
     }
-    
-    var fileName = $"{(filteredOnly ? "filtered_classes" : "all_classes")}_{DateTime.Now:yyyyMMddHHmmss}.json";
-    var filePath = Path.Combine(logFolderPath, fileName);
-    System.IO.File.WriteAllText(filePath, json);
-    
-    // Still return the JSON for download
-    return new JsonResult(new { json, fileName });
-}
 
 }

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "JQWGslzimlpmfqUhoQQZibtxfq6SUPNorHs9Q43MORs=",
+  "Hash": "Fp34XknA3IXo75Ugh3yCivkjs1j1eyaZYHIkt924saQ=",
   "Source": "MyRazorApp",
   "BasePath": "_content/MyRazorApp",
   "Mode": "Default",
@@ -857,6 +857,27 @@
       "OriginalItemSpec": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
     },
     {
+      "Identity": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\obj\\Debug\\net9.0\\compressed\\khtmvtm95k-68gpitq4e2.gz",
+      "SourceId": "MyRazorApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/MyRazorApp",
+      "RelativePath": "data/users#[.{fingerprint=68gpitq4e2}]?.json.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\wwwroot\\data\\users.json",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "ghplmscged",
+      "Integrity": "vAVo+xp5m5bvuUKoB+kSYwQ2KhJJsxU3SOiKztB7Tvs=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\wwwroot\\data\\users.json"
+    },
+    {
       "Identity": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\obj\\Debug\\net9.0\\compressed\\l54cks3koe-0j3bgjxly4.gz",
       "SourceId": "MyRazorApp",
       "SourceType": "Discovered",
@@ -1422,6 +1443,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\site.css"
+    },
+    {
+      "Identity": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\wwwroot\\data\\users.json",
+      "SourceId": "MyRazorApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\wwwroot\\",
+      "BasePath": "_content/MyRazorApp",
+      "RelativePath": "data/users#[.{fingerprint}]?.json",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "68gpitq4e2",
+      "Integrity": "ZqSaXQWj9ms0/9SxEF6eol1cLdaM6eiZCVzpVfwpkHs=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\data\\users.json"
     },
     {
       "Identity": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\wwwroot\\favicon.ico",
@@ -3022,6 +3064,304 @@
         {
           "Name": "integrity",
           "Value": "sha256-0FC1RbVkLkwKhJ1oi+r2Hw4Tm9av6DyJeo95YVvfA3Y="
+        }
+      ]
+    },
+    {
+      "Route": "data/users.68gpitq4e2.json",
+      "AssetFile": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\obj\\Debug\\net9.0\\compressed\\khtmvtm95k-68gpitq4e2.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.007518796992"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "132"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vAVo+xp5m5bvuUKoB+kSYwQ2KhJJsxU3SOiKztB7Tvs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Apr 2025 08:16:02 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/json"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"ZqSaXQWj9ms0/9SxEF6eol1cLdaM6eiZCVzpVfwpkHs=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "68gpitq4e2"
+        },
+        {
+          "Name": "label",
+          "Value": "data/users.json"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ZqSaXQWj9ms0/9SxEF6eol1cLdaM6eiZCVzpVfwpkHs="
+        }
+      ]
+    },
+    {
+      "Route": "data/users.68gpitq4e2.json",
+      "AssetFile": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\wwwroot\\data\\users.json",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "177"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/json"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ZqSaXQWj9ms0/9SxEF6eol1cLdaM6eiZCVzpVfwpkHs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Apr 2025 08:16:02 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "68gpitq4e2"
+        },
+        {
+          "Name": "label",
+          "Value": "data/users.json"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ZqSaXQWj9ms0/9SxEF6eol1cLdaM6eiZCVzpVfwpkHs="
+        }
+      ]
+    },
+    {
+      "Route": "data/users.68gpitq4e2.json.gz",
+      "AssetFile": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\obj\\Debug\\net9.0\\compressed\\khtmvtm95k-68gpitq4e2.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "132"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/json"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vAVo+xp5m5bvuUKoB+kSYwQ2KhJJsxU3SOiKztB7Tvs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Apr 2025 08:16:02 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "68gpitq4e2"
+        },
+        {
+          "Name": "label",
+          "Value": "data/users.json.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-vAVo+xp5m5bvuUKoB+kSYwQ2KhJJsxU3SOiKztB7Tvs="
+        }
+      ]
+    },
+    {
+      "Route": "data/users.json",
+      "AssetFile": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\obj\\Debug\\net9.0\\compressed\\khtmvtm95k-68gpitq4e2.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.007518796992"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "132"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vAVo+xp5m5bvuUKoB+kSYwQ2KhJJsxU3SOiKztB7Tvs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Apr 2025 08:16:02 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/json"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"ZqSaXQWj9ms0/9SxEF6eol1cLdaM6eiZCVzpVfwpkHs=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ZqSaXQWj9ms0/9SxEF6eol1cLdaM6eiZCVzpVfwpkHs="
+        }
+      ]
+    },
+    {
+      "Route": "data/users.json",
+      "AssetFile": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\wwwroot\\data\\users.json",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "177"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/json"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ZqSaXQWj9ms0/9SxEF6eol1cLdaM6eiZCVzpVfwpkHs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Apr 2025 08:16:02 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ZqSaXQWj9ms0/9SxEF6eol1cLdaM6eiZCVzpVfwpkHs="
+        }
+      ]
+    },
+    {
+      "Route": "data/users.json.gz",
+      "AssetFile": "C:\\Users\\ilayd\\Documents\\GitHub\\Ceng382_25-26_202211012\\MyRazorApp\\obj\\Debug\\net9.0\\compressed\\khtmvtm95k-68gpitq4e2.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "132"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/json"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vAVo+xp5m5bvuUKoB+kSYwQ2KhJJsxU3SOiKztB7Tvs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Apr 2025 08:16:02 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-vAVo+xp5m5bvuUKoB+kSYwQ2KhJJsxU3SOiKztB7Tvs="
         }
       ]
     },
