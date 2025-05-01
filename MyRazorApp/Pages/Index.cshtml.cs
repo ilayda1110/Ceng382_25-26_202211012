@@ -1,18 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 using MyRazorApp.Helpers;
-using System.Text.Json;
-using System.Linq;
-using Microsoft.AspNetCore.Authorization; // Add this for FirstOrDefault
+using MyRazorApp.Models;
+using MyRazorApp.Data;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyRazorApp.Pages;
 
 [Authorize]
 public class IndexModel : PageModel
 {
-    private static List<ClassInformationModel> classInformations = new List<ClassInformationModel>();
-    private static int nextId = 1;
+    private readonly SchoolDbContext _context;
+
+    public IndexModel(SchoolDbContext context)
+    {
+        _context = context;
+    }
 
     [BindProperty]
     public ClassInformationModel ClassInformation { get; set; } = new ClassInformationModel();
@@ -28,52 +33,54 @@ public class IndexModel : PageModel
     public int PageSize { get; set; } = 10;
     public int TotalPages { get; set; }
 
-    public IActionResult OnGet(int? id)
+    public async Task<IActionResult> OnGetAsync(int? id)
     {
-        // Check authentication - this should return RedirectToPage if not authenticated
         if (!IsAuthenticated())
         {
             return RedirectToPage("/Login");
         }
 
-        // Ensure synthetic data is present for pagination testing
-        if (!classInformations.Any())
-        {
-            GenerateSyntheticData();
-        }
-
-        // Check if an ID is passed for editing
         if (id.HasValue)
         {
-            var classToEdit = classInformations.FirstOrDefault(c => c.Id == id.Value);
+            var classToEdit = await _context.Classes.FindAsync(id.Value);
             if (classToEdit != null)
             {
-                ClassInformation = classToEdit;
+                ClassInformation = new ClassInformationModel
+                {
+                    Id = classToEdit.Id,
+                    ClassName = classToEdit.Name,
+                    StudentCount = classToEdit.PersonCount,
+                    Description = classToEdit.Description
+                };
             }
         }
 
-        // Filtering
-        var filteredList = string.IsNullOrEmpty(SearchTerm)
-            ? classInformations
-            : classInformations.Where(c => c.ClassName.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+        IQueryable<Class> query = _context.Classes.AsQueryable();
 
-        // Pagination
-        TotalPages = (int)Math.Ceiling((double)filteredList.Count / PageSize);
+        if (!string.IsNullOrEmpty(SearchTerm))
+        {
+            query = query.Where(c => c.Name.Contains(SearchTerm));
+        }
+
+        var totalCount = await query.CountAsync();
+        TotalPages = (int)Math.Ceiling((double)totalCount / PageSize);
         PageNumber = Math.Max(1, Math.Min(PageNumber, TotalPages > 0 ? TotalPages : 1));
 
-        FilteredClasses = filteredList
+        var classes = await query
             .Skip((PageNumber - 1) * PageSize)
             .Take(PageSize)
-            .Select(c => new ClassInformationTable
-            {
-                Id = c.Id,
-                ClassName = c.ClassName,
-                StudentCount = c.StudentCount,
-                Description = c.Description
-            })
-            .ToList();
+            .ToListAsync();
 
-        return Page(); // Make sure this is present!
+        FilteredClasses = classes.Select(c => new ClassInformationTable
+        {
+            Id = c.Id,
+            ClassName = c.Name,
+            StudentCount = c.PersonCount,
+            Description = c.Description,
+            IsActive = c.IsActive
+        }).ToList();
+
+        return Page();
     }
 
     private bool IsAuthenticated()
@@ -91,7 +98,8 @@ public class IndexModel : PageModel
                sessionToken == cookieToken &&
                sessionId == cookieSessionId;
     }
-    public IActionResult OnPost()
+
+    public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
         {
@@ -100,19 +108,28 @@ public class IndexModel : PageModel
 
         if (ClassInformation.Id == 0)
         {
-            ClassInformation.Id = nextId++;
-            classInformations.Add(ClassInformation);
+            var newClass = new Class
+            {
+                Name = ClassInformation.ClassName,
+                PersonCount = ClassInformation.StudentCount,
+                Description = ClassInformation.Description,
+                IsActive = ClassInformation.IsActive
+            };
+            _context.Classes.Add(newClass);
         }
         else
         {
-            var existingItem = classInformations.Find(x => x.Id == ClassInformation.Id);
-            if (existingItem != null)
+            var existingClass = await _context.Classes.FindAsync(ClassInformation.Id);
+            if (existingClass != null)
             {
-                existingItem.ClassName = ClassInformation.ClassName;
-                existingItem.StudentCount = ClassInformation.StudentCount;
-                existingItem.Description = ClassInformation.Description;
+                existingClass.Name = ClassInformation.ClassName;
+                existingClass.PersonCount = ClassInformation.StudentCount;
+                existingClass.Description = ClassInformation.Description;
+                existingClass.IsActive = ClassInformation.IsActive;
             }
         }
+
+        await _context.SaveChangesAsync();
 
         return RedirectToPage("./Index");
     }
@@ -122,73 +139,45 @@ public class IndexModel : PageModel
         return RedirectToPage("./Index", new { id = id });
     }
 
-    public IActionResult OnPostDelete(int id)
+    public async Task<IActionResult> OnPostDeleteAsync(int id)
     {
-        var itemToRemove = classInformations.Find(x => x.Id == id);
-        if (itemToRemove != null)
+        var classToDelete = await _context.Classes.FindAsync(id);
+        if (classToDelete != null)
         {
-            classInformations.Remove(itemToRemove);
+            _context.Classes.Remove(classToDelete);
+            await _context.SaveChangesAsync();
         }
 
         return RedirectToPage("./Index");
     }
 
-    private void GenerateSyntheticData()
+    public async Task<IActionResult> OnPostExportAsync(bool filteredOnly, string[] selectedColumns, string? searchTerm, int pageNumber)
     {
-        for (int i = 1; i <= 100; i++)
-        {
-            classInformations.Add(new ClassInformationModel
-            {
-                Id = nextId++,
-                ClassName = $"Class {i}",
-                StudentCount = new System.Random().Next(20, 50),
-                Description = $"Description for Class {i}"
-            });
-        }
-    }
-
-    public IActionResult OnPostExport(bool filteredOnly, string[] selectedColumns, string? searchTerm, int pageNumber)
-    {
-        IEnumerable<ClassInformationTable> dataToExport;
+        IQueryable<Class> query = _context.Classes.AsQueryable();
 
         if (filteredOnly)
         {
-            // Filter
-            var filteredList = string.IsNullOrEmpty(searchTerm)
-                ? classInformations
-                : classInformations.Where(c => c.ClassName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
-
-            // Pagination
-            int totalPages = (int)Math.Ceiling((double)filteredList.Count / PageSize);
-            int validPage = Math.Max(1, Math.Min(pageNumber, totalPages > 0 ? totalPages : 1));
-
-            var pagedList = filteredList
-                .Skip((validPage - 1) * PageSize)
-                .Take(PageSize)
-                .Select(c => new ClassInformationTable
-                {
-                    Id = c.Id,
-                    ClassName = c.ClassName,
-                    StudentCount = c.StudentCount,
-                    Description = c.Description
-                });
-
-            dataToExport = pagedList;
-        }
-        else
-        {
-            dataToExport = classInformations.Select(c => new ClassInformationTable
+            if (!string.IsNullOrEmpty(searchTerm))
             {
-                Id = c.Id,
-                ClassName = c.ClassName,
-                StudentCount = c.StudentCount,
-                Description = c.Description
-            });
+                query = query.Where(c => c.Name.Contains(searchTerm));
+            }
+
+            int totalCount = await query.CountAsync();
+            int validPage = Math.Max(1, Math.Min(pageNumber, (int)Math.Ceiling((double)totalCount / PageSize)));
+            query = query.Skip((validPage - 1) * PageSize).Take(PageSize);
         }
+
+        var dataToExport = await query.Select(c => new ClassInformationTable
+        {
+            Id = c.Id,
+            ClassName = c.Name,
+            StudentCount = c.PersonCount,
+            Description = c.Description,
+            IsActive = c.IsActive
+        }).ToListAsync();
 
         var json = Utils.Instance.ExportToJson(dataToExport, selectedColumns?.Any() == true ? selectedColumns : null);
 
-        // Save to Log folder
         var logFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Log");
         if (!Directory.Exists(logFolderPath))
         {
@@ -199,8 +188,6 @@ public class IndexModel : PageModel
         var filePath = Path.Combine(logFolderPath, fileName);
         System.IO.File.WriteAllText(filePath, json);
 
-        // Still return the JSON for download
         return new JsonResult(new { json, fileName });
     }
-
 }

@@ -96,7 +96,10 @@
                     <textarea asp-for="ClassInformation.Description" class="form-control"></textarea>
                     <span asp-validation-for="ClassInformation.Description" class="text-danger"></span>
                 </div>
-
+                <div class="mb-3 form-check">
+                    <input type="checkbox" asp-for="ClassInformation.IsActive" class="form-check-input" />
+                    <label class="form-check-label" asp-for="ClassInformation.IsActive">Is Active</label>
+                </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
@@ -129,6 +132,7 @@
                         <th class="column-selector" data-column="ClassName">Class Name</th>
                         <th class="column-selector" data-column="StudentCount">Student Count</th>
                         <th class="column-selector" data-column="Description">Description</th>
+                        <th class="column-selector" data-column="Is Active">Is Active</th>
                         <th class="action-column">Actions</th>
                     </tr>
                 </thead>
@@ -139,6 +143,7 @@
                             <td>@item.ClassName</td>
                             <td>@item.StudentCount</td>
                             <td>@item.Description</td>
+                            <td>@(item.IsActive ? "Yes" : "No")</td>
                             <td>
                                 <form method="post" asp-page-handler="Edit" style="display:inline;">
                                     <input type="hidden" name="id" value="@item.Id" />
@@ -213,7 +218,7 @@
                         selectedColumns: selectedColumns,
                         searchTerm: $('input[name="SearchTerm"]').val(),
                         pageNumber: @Model.PageNumber
-            },
+                },
                     headers: {
                         RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
                     },
