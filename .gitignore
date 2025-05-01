@@ -1,1 +1,31 @@
-/.vscode
+# .gitignore for ASP.NET Core (Razor Pages) with SSMS
+
+# Visual Studio and VS Code files
+.vscode/
+.vs/
+*.user
+*.suo
+*.userprefs
+
+# Build outputs
+bin/
+obj/
+*.dll
+*.pdb
+*.exe
+
+# NuGet packages and restore
+.nuget/
+packages/
+*.nupkg
+
+# Local development files (e.g., appsettings.Development.json)
+appsettings.Development.json
+
+# SQL Server files (if any)
+*.mdf
+*.ldf
+
+# Misc
+.DS_Store
+*.log
