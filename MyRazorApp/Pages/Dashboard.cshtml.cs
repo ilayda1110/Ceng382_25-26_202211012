@@ -1,3 +1,51 @@
+/*
+I want you to detect the problem about redirecting to pages. When i start my program, the link looks like "/Login?ReturnUrl=%2F" even though it should just show /Login. I tried to debug my code in Index.cshtml.cs but it didnt even get into first line of OnGetAsync(). You can try to fix this problem by keeping this current structure (when we start the program, it starts with table page which is Index even though it should start with Login page) or totally change the codes inside of files. My teacher adviced me to change it since it should work like that
+(source code provided)
+
+For step 1, it shows error as 'PageActionEndpointConventionBuilder' does not contain a definition for 'AddRazorPagesOptions' and the best extension method overload 'MvcRazorPagesMvcBuilderExtensions.AddRazorPagesOptions(IMvcBuilder, Action<RazorPagesOptions>)' requires a receiver of type 'Microsoft.Extensions.DependencyInjection.IMvcBuilder'
+
+When i run the program, it gives error as "AmbiguousMatchException: The request matched multiple endpoints. Matches:
+
+/Index
+/Login"
+Dont you think that we should swap these codes to make it run Index as login page and then Dashboard to show table rather than forcing program to start with Login? I think it will be more safe to do that.
+
+When i enter as admin it gives error as "Şu web adresi için web sayfası bulunamadı:http://localhost:5254/Login?ReturnUrl=%2FDashboard"
+
+It still gives the same error. I will provide my code files, can you check and correct them if you see a problem?
+(source code provided)
+
+Okay everything works for now. The next thing we need to do is adding sentetic data. I need to create 100 data and add to database at start (it shouldnt add 100 more when you restart the program. it should be a one time thing)
+
+It didnt generate data. Let me send you my SchoolDbContext.cs:
+(source code provided)
+Also dont forget to display sentetic data in table since they are all active
+
+This was my query btw:
+SELECT TOP (1000) [Id]
+      ,[Name]
+      ,[PersonCount]
+      ,[Description]
+      ,[IsActive]
+  FROM [SchoolDb].[dbo].[Classes]
+Also it gave error as "SqlException: Invalid object name 'Classes'.
+Microsoft.Data.SqlClient.SqlCommand+<>c.<ExecuteDbDataReaderAsync>b__211_0(Task<SqlDataReader> result)"
+
+Gave error as "Add-Migration : The term 'Add-Migration' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spell
+ing of the name, or if a path was included, verify that the path is correct and try again.
+At line:1 char:1
++ Add-Migration InitialCreate
++ ~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Add-Migration:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException"
+
+Okay it created the sentetic data and i can see it on database but i have another issue. When i press page 2 for example, it directs me to login page.
+(source code provided)
+
+Still doesnt work and the url looks like "/?PageNumber=2". Is that because of null reference warnings or something like that?
+(source code provided)
+*/
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
