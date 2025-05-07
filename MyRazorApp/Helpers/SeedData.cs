@@ -6,32 +6,51 @@ namespace MyRazorApp.Helpers;
 
 public static class SeedData
 {
-    public static void Initialize(SchoolDbContext context)
+    public static async Task Initialize(SchoolDbContext context, ILogger logger)
     {
         try
         {
-            // Ensure database is created
-            context.Database.EnsureCreated();
+            // Remove EnsureCreated() if using migrations
+            // context.Database.EnsureCreated();
 
-            if (!context.Classes.Any())
+            // Seed Classes if empty
+            if (!await context.Classes.AnyAsync())
             {
                 var random = new Random();
+                var classes = new List<Class>();
+
                 for (int i = 1; i <= 100; i++)
                 {
-                    context.Classes.Add(new Class
+                    classes.Add(new Class
                     {
                         Name = $"Class {i}",
                         PersonCount = random.Next(20, 50),
                         Description = $"Description for Class {i}",
                         IsActive = true
                     });
+
+                    // Save in batches of 20 to improve performance
+                    if (i % 20 == 0)
+                    {
+                        await context.Classes.AddRangeAsync(classes);
+                        await context.SaveChangesAsync();
+                        classes.Clear();
+                    }
                 }
-                context.SaveChanges();
+
+                // Add any remaining classes
+                if (classes.Count > 0)
+                {
+                    await context.Classes.AddRangeAsync(classes);
+                    await context.SaveChangesAsync();
+                }
+
+                logger.LogInformation("Seeded 100 classes");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error seeding data: {ex.Message}");
-        }
+            logger.LogError(ex, "An error occurred seeding classes");
+            }
     }
 }

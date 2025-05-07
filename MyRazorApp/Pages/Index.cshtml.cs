@@ -1,83 +1,64 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+// Pages/Index.cshtml.cs
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
-using System.Text.Json;
+using MyRazorApp.Models;
+using ProductsApp.Models;
 
-namespace MyRazorApp.Pages;
-
-public class IndexModel : PageModel
+namespace MyRazorApp.Pages
 {
-    [BindProperty]
-    public InputModel Input { get; set; } = new InputModel();
-
-    [TempData]
-    public string ErrorMessage { get; set; } = string.Empty;
-
-    public class InputModel
+    public class IndexModel : PageModel
     {
-        public string Username { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-    }
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-    public void OnGet()
-    {
-    }
+        [BindProperty]
+        public InputModel Input { get; set; } = new InputModel();
 
-    // Login.cshtml.cs
-public async Task<IActionResult> OnPost()
-{
-        try
-    {
-        // Validate user credentials (existing code)
-        var usersFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "data", "users.json");
-        if (!System.IO.File.Exists(usersFilePath))
+        [TempData]
+        public string ErrorMessage { get; set; } = string.Empty;
+
+        public class InputModel
         {
-            ErrorMessage = "Server configuration error";
-            return Page();
+            public string Username { get; set; } = string.Empty;
+            public string Password { get; set; } = string.Empty;
         }
 
-        var usersJson = await System.IO.File.ReadAllTextAsync(usersFilePath);
-        var users = JsonSerializer.Deserialize<List<User>>(usersJson);
-        var user = users?.FirstOrDefault(u => 
-            u.Username == Input.Username && 
-            u.Password == Input.Password &&
-            u.IsActive);
-
-        if (user == null)
+        public IndexModel(
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager)
         {
-            ErrorMessage = "Invalid login attempt";
-            return Page();
+            _signInManager = signInManager;
+            _userManager = userManager;
         }
 
-        // Create claims for the authenticated user
-        var claims = new List<Claim>
+        public void OnGet()
         {
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, user.Role)
-        };
+        }
 
-        // Create an authentication cookie
-        var claimsIdentity = new ClaimsIdentity(
-            claims, 
-            CookieAuthenticationDefaults.AuthenticationScheme);
-
-        await HttpContext.SignInAsync(
-            CookieAuthenticationDefaults.AuthenticationScheme,
-            new ClaimsPrincipal(claimsIdentity),
-            new AuthenticationProperties
+        public async Task<IActionResult> OnPost()
+        {
+            try
             {
-                IsPersistent = true,
-                ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
-            });
+                var result = await _signInManager.PasswordSignInAsync(
+                    Input.Username,
+                    Input.Password,
+                    isPersistent: true,
+                    lockoutOnFailure: false);
 
-        return RedirectToPage("/Dashboard");
+                if (result.Succeeded)
+                {
+                    return RedirectToPage("/Dashboard");
+                }
+
+                ErrorMessage = "Invalid login attempt";
+                return Page();
+            }
+            catch (Exception)
+            {
+                ErrorMessage = "An error occurred during login";
+                return Page();
+            }
+        }
     }
-    catch (Exception)
-        {
-        ErrorMessage = "An error occurred during login";
-        return Page();
-    }
-}
 }
