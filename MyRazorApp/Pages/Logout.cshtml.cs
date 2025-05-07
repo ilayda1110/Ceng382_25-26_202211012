@@ -9,22 +9,17 @@ namespace MyRazorApp.Pages;
 public class LogoutModel : PageModel
 {
     // Logout.cshtml.cs
-public IActionResult OnGet()
+public async Task<IActionResult> OnGetAsync()
 {
-    HttpContext.Session.Clear();
-    
-    // Cookie removal with same options
-    var cookieOptions = new CookieOptions
-    {
-        HttpOnly = true,
-        Secure = true,
-        SameSite = SameSiteMode.Strict
-    };
-    
-    Response.Cookies.Delete("username", cookieOptions);
-    Response.Cookies.Delete("token", cookieOptions);
-    Response.Cookies.Delete("session_id", cookieOptions);
+        // Clear the authentication cookie
+    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-    return RedirectToPage("/Login");
+    // Clear session and custom cookies (optional)
+    HttpContext.Session.Clear();
+    Response.Cookies.Delete("username");
+    Response.Cookies.Delete("token");
+    Response.Cookies.Delete("session_id");
+
+    return RedirectToPage("/Index");
 }
 }

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MyRazorApp.Data;
+using MyRazorApp.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,11 +19,8 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthentication("Cookies")
     .AddCookie("Cookies", options =>
     {
-        options.LoginPath = "/Login";
-        options.AccessDeniedPath = "/Login";
         options.Cookie.Name = "ClassApp.Auth";
         options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Use Always if using HTTPS
         options.Cookie.SameSite = SameSiteMode.Lax;
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
@@ -38,15 +36,32 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<SchoolDbContext>();
+        context.Database.Migrate(); // Apply migrations
+        SeedData.Initialize(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding the DB");
+    }
+}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseSession();
 
 app.MapRazorPages();
+
+app.Run();
 
 app.Run();
